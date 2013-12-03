@@ -104,7 +104,7 @@ then
 	runcheck=$(/bin/ps -C $process u | awk '{ sum+=$3} END {print "%CPU " sum}')
 elif [ "$checktoken" == "4" ]
 then
-	runcheck=$(/bin/ps -C $process u | awk '{ sum+=$4} END {print "%CPU " sum}')
+	runcheck=$(/bin/ps -C $process u | awk '{ sum+=$4} END {print "%MEM " sum}')
 else
 	echo "There is an error with your check's syntax. Please resolve the problem and rerun the check."
 	exit 3
