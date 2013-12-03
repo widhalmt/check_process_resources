@@ -101,10 +101,10 @@ fi
 ## Setting Variables with Monitoring Process and Custom Check Tokens //\\ THIS RUNS THE CHECK
 if [ "$checktoken" == "3" ]
 then
-	runcheck=$(/bin/ps -C $process u | awk '{print $3}')
+	runcheck=$(/bin/ps -C $process u | awk '{ sum+=$3} END {print "%CPU " sum}')
 elif [ "$checktoken" == "4" ]
 then
-	runcheck=$(/bin/ps -C $process u | awk '{print $4}')
+	runcheck=$(/bin/ps -C $process u | awk '{ sum+=$4} END {print "%CPU " sum}')
 else
 	echo "There is an error with your check's syntax. Please resolve the problem and rerun the check."
 	exit 3
@@ -136,15 +136,15 @@ roundedresult=$(awk -v var=$checkresult 'BEGIN { rounded = sprintf("%.0f", var);
 
 if [ "$roundedresult" -lt "$warning" ]
 then
-        echo "The "$fancyname" process "$check" usage is ok. Current "$check" usage: "${checkresult}"%."
+        echo "The "$fancyname" process "$check" usage is ok. Current "$check" usage: "${checkresult}"%.|${check}=${checkresult}%;${warning};${critical;}"
         exit 0
 elif [ "$roundedresult" -ge "$warning" -a "$roundedresult" -lt "$critical" ]
 then
-        echo "WARNING - The "$fancyname" process's current "$check" usage is "${checkresult}"%."
+        echo "WARNING - The "$fancyname" process's current "$check" usage is "${checkresult}"%.|${check}=${checkresult}%;${warning};${critical};"
         exit 1
 elif [ "$roundedresult" -ge "$critical" ]
 then
-        echo "CRITICAL - The "$fancyname" process's current "$check" usage is "${checkresult}"%."
+        echo "CRITICAL - The "$fancyname" process's current "$check" usage is "${checkresult}"%.|${check}=${checkresult}%;${warning};${critical};"
         exit 2
 fi
 
