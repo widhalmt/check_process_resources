@@ -137,7 +137,7 @@ roundedresult=$(awk -v var=$checkresult 'BEGIN { rounded = sprintf("%.0f", var);
 
 if [ "$roundedresult" -lt "$warning" ]
 then
-        echo "The "$fancyname" process "$check" usage is ok. Current "$check" usage: "${checkresult}"%.|${check}=${checkresult}%;${warning};${critical;}"
+        echo "The "$fancyname" process "$check" usage is ok. Current "$check" usage: "${checkresult}"%.|${check}=${checkresult}%;${warning};${critical};"
         exit 0
 elif [ "$roundedresult" -ge "$warning" -a "$roundedresult" -lt "$critical" ]
 then
