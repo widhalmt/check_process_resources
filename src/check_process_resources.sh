@@ -1,5 +1,6 @@
 #!/bin/bash
 ## Script written by Eli Keimig and Copyright (C) 2010 Eli Keimig. This script is released and distributed under the terms of the GNU General Public License.
+## Adapted and enhanced by Thomas Widhalm (C) 2013. This script is still released and distributed under the terms of the GNU General Public License.
 
 ## Set Variables
 displayhelp="false"
