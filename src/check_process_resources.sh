@@ -91,10 +91,11 @@ fi
 ## Setting Check Tokens by Check Type //\\ CPU or Memory //\\ Default Check Type = Memory
 if [[ "$check" != "" ]]
 then
-	if [[ "$check" == "cpu" ]] || [[ "$check" == "Cpu" ]] || [[ "$check" == "CPU" ]]
+	check=$(echo "$check" | tr [:upper:] [:lower:])
+	if [[ "$check" == "cpu" ]]
 	then
 	checktoken="3"
-	elif [[ "$check" == "memory" ]] || [[ "$check" == "Memory" ]] || [[ "$check" == "MEMORY" ]]
+	elif [[ "$check" == "memory" ]]
 	then
 	checktoken="4"
 	fi
