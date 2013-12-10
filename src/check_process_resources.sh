@@ -54,6 +54,7 @@ then
 					The default is 60%
 		
 	Script written by Eli Keimig and Copyright (C) 2010 Eli Keimig.
+	Edited by Thomas Widhalm (C) 2013
 	This script is released and distributed under the terms of the GNU
 	General Public License.     >>>>    http://www.gnu.org/licenses/
 	
@@ -112,7 +113,7 @@ else
 fi
 
 ## Rounding the check results for comparison to warning and critical thresholds.
-checkresult=$(echo ${runcheck} | awk '{print $2}')
+checkresult=$(echo ${runcheck} | cut -d ' ' -f2 )
 
 ## Check for Warning and Critical Levels - If Switches were not used, sets variables to default values
 if [ "$warning" == "" ]
