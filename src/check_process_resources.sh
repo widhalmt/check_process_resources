@@ -1,8 +1,12 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ## Script written by Eli Keimig and Copyright (C) 2010 Eli Keimig. This script is released and distributed under the terms of the GNU General Public License.
 ## Adapted and enhanced by Thomas Widhalm (C) 2013. This script is still released and distributed under the terms of the GNU General Public License.
 
+## Tested on Fedora 19 with bash-4.2.45-1.fc19.x86_64
+
 ## Set Variables
+##
+## Initialising variables is not necessary in bash but it helps to understand what variables are used
 displayhelp="false"
 runcheck=""
 checkresult=""
@@ -32,7 +36,7 @@ done
 shift $(( $OPTIND - 1 ))
 
 ## Display Help
-if [ "$displayhelp" == "true" ]
+if [[ "$displayhelp" == "true" ]]
 then
 	echo "
 	::Process Resource Usage Check Help File::
@@ -72,25 +76,25 @@ then
 fi	
 
 ## Check for Process to be Monitored
-if [ "$process" == "" ]
+if [[ "$process" == "" ]]
 then
 	echo "No process to check was specified. Check cannot be run. The '-p' switch can be used to specify the process"
 	exit 3
 fi
 
 ## Set and Read Fancy Name //\\ This is used for results sent to Nagios
-if [ "$fancyname" == "" ]
+if [[ "$fancyname" == "" ]]
 then
-	fancyname=$process
+	fancyname="$process"
 fi
 
 ## Setting Check Tokens by Check Type //\\ CPU or Memory //\\ Default Check Type = Memory
-if [ "$check" != "" ]
+if [[ "$check" != "" ]]
 then
-	if [ "$check" == "cpu" ] || [ "$check" == "Cpu" ] || [ "$check" == "CPU" ]
+	if [[ "$check" == "cpu" ]] || [[ "$check" == "Cpu" ]] || [[ "$check" == "CPU" ]]
 	then
 	checktoken="3"
-	elif [ "$check" == "memory" ] || [ "$check" == "Memory" ] || [ "$check" == "MEMORY" ]
+	elif [[ "$check" == "memory" ]] || [[ "$check" == "Memory" ]] || [[ "$check" == "MEMORY" ]]
 	then
 	checktoken="4"
 	fi
@@ -101,50 +105,55 @@ else
 fi
 
 ## Setting Variables with Monitoring Process and Custom Check Tokens //\\ THIS RUNS THE CHECK
-if [ "$checktoken" == "3" ]
+##
+## the awk construct with sum+= will take every value awk would otherwise put out and sum it up
+## this way all resources process which mach the input pattern will get sumed up instead of taking just the first one
+if [[ "$checktoken" == "3" ]]
 then
-	runcheck=$(/bin/ps -C $process u | awk '{ sum+=$3} END {print "%CPU " sum}')
-elif [ "$checktoken" == "4" ]
+	runcheck="$(/bin/ps -C $process u | awk '{ sum+=$3} END {print "%CPU " sum}')"
+elif [[ "$checktoken" == "4" ]]
 then
-	runcheck=$(/bin/ps -C $process u | awk '{ sum+=$4} END {print "%MEM " sum}')
+	runcheck="$(/bin/ps -C $process u | awk '{ sum+=$4} END {print "%MEM " sum}')"
 else
 	echo "There is an error with your check's syntax. Please resolve the problem and rerun the check."
 	exit 3
 fi
 
 ## Rounding the check results for comparison to warning and critical thresholds.
-checkresult=$(echo ${runcheck} | cut -d ' ' -f2 )
+checkresult="$(echo ${runcheck} | cut -d ' ' -f2 )"
 
 ## Check for Warning and Critical Levels - If Switches were not used, sets variables to default values
-if [ "$warning" == "" ]
+if [[ "$warning" == "" ]]
 then
 	echo "Warning level was not specified with the '-w' switch. Using default value of 60%."
 	warning="60"
 fi
-if [ "$critical" == "" ]
+if [[ "$critical" == "" ]]
 then
 	echo "Critical level was not specified with the '-c' switch. Using default value of 70%."
 	critical="70"
 fi
 
 ## Create Check Results that can be Read and Interpreted by Nagios
-if [ "$checkresult" == "" ]
+if [[ "$checkresult" == "" ]]
 then
         echo "The "$fancyname" process doesn't appear to be running."
         exit 3
 fi
 
-roundedresult=$(awk -v var=$checkresult 'BEGIN { rounded = sprintf("%.0f", var); print rounded }')
+roundedresult="$(awk -v var=$checkresult 'BEGIN { rounded = sprintf("%.0f", var); print rounded }')"
 
-if [ "$roundedresult" -lt "$warning" ]
+if [[ "$roundedresult" -lt "$warning" ]]
 then
         echo "The "$fancyname" process "$check" usage is ok. Current "$check" usage: "${checkresult}"%.|${check}=${checkresult}%;${warning};${critical};"
         exit 0
+## The following expression only works with [ not with [[
+## TODO: Replace it with a working [[ test
 elif [ "$roundedresult" -ge "$warning" -a "$roundedresult" -lt "$critical" ]
 then
         echo "WARNING - The "$fancyname" process's current "$check" usage is "${checkresult}"%.|${check}=${checkresult}%;${warning};${critical};"
         exit 1
-elif [ "$roundedresult" -ge "$critical" ]
+elif [[ "$roundedresult" -ge "$critical" ]]
 then
         echo "CRITICAL - The "$fancyname" process's current "$check" usage is "${checkresult}"%.|${check}=${checkresult}%;${warning};${critical};"
         exit 2
