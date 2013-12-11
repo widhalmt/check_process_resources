@@ -7,6 +7,7 @@
 ## Set Variables
 ##
 ## Initialising variables is not necessary in bash but it helps to understand what variables are used
+version="0.2.0"
 displayhelp="false"
 runcheck=""
 checkresult=""
@@ -16,8 +17,18 @@ check=""
 warning=""
 critical=""
 
+## Subroutines
+
+# show_version
+# this just shows the current version and exits
+
+show_version() {
+  echo "Version: ${version}"
+  exit 0
+}
+
 ## Options to Accept //\\ Available Switches
-optstr=h:p:N:C:w:c: ## The colon trailing the option means that an argument is required if the switch is used.
+optstr=Vh:p:N:C:w:c: ## The colon trailing the option means that an argument is required if the switch is used.
 
 ## Check for Switches
 while getopts $optstr Switchvar
@@ -29,6 +40,7 @@ do
 		N) fancyname=$OPTARG ;;
 		p) process=$OPTARG ;;
 		h) displayhelp="true" ;;
+		V) show_version;;
 	esac
 done
 shift $(( $OPTIND - 1 ))
@@ -53,6 +65,7 @@ then
 		-p,		Specify a process to be monitored
 		-w,		Specify a warning level for the check
 					The default is 60%
+		-V		Show version of this plugin
 		
 	Script written by Eli Keimig and Copyright (C) 2010 Eli Keimig.
 	Edited by Thomas Widhalm (C) 2013
