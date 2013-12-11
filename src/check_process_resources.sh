@@ -10,7 +10,6 @@
 displayhelp="false"
 runcheck=""
 checkresult=""
-hostname=""
 process=""
 fancyname=""
 check=""
@@ -18,7 +17,7 @@ warning=""
 critical=""
 
 ## Options to Accept //\\ Available Switches
-optstr=hH:p:N:C:w:c: ## The colon trailing the option means that an argument is required if the switch is used.
+optstr=h:p:N:C:w:c: ## The colon trailing the option means that an argument is required if the switch is used.
 
 ## Check for Switches
 while getopts $optstr Switchvar
@@ -29,7 +28,6 @@ do
 		C) check=$OPTARG ;;
 		N) fancyname=$OPTARG ;;
 		p) process=$OPTARG ;;
-		H) hostname=$OPTARG ;;
 		h) displayhelp="true" ;;
 	esac
 done
@@ -45,7 +43,6 @@ then
 					The default check type is Memory
 		-c,		Specify a critical level for the check 
 					The default is 70%
-		-H,		Specify hostname
 		-h,		Display help information
 		-N,		Specify a fancy name for the process
 					This is for display in Nagios messages
